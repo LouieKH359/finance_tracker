@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务追踪系统 - 查看记录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef0fd;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --success-light: #e9f9fe;
+            --danger: #f72585;
+            --danger-light: #fdebf3;
+            --warning: #f8961e;
+            --warning-light: #fef5e9;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --border-radius: 14px;
+            --transition: all 0.3s ease;
+            
+            /* 分类颜色 */
+            --category-1: #4361ee;
+            --category-1-light: #eef0fd;
+            --category-2: #f72585;
+            --category-2-light: #fdebf3;
+            --category-3: #4cc9f0;
+            --category-3-light: #e9f9fe;
+            --category-4: #7209b7;
+            --category-4-light: #f2e9f9;
+            --category-5: #f8961e;
+            --category-5-light: #fef5e9;
+            --category-6: #4895ef;
+            --category-6-light: #e9f1fd;
+            --category-7: #06d6a0;
+            --category-7-light: #e8fbf5;
+            --category-8: #ef476f;
+            --category-8-light: #fdebee;
+            --category-9: #ff9e64;
+            --category-9-light: #fff3ec;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f9fafc 0%, #f0f4f9 100%);
+            color: var(--dark);
+            padding: 20px;
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .dashboard {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.25);
+        }
+
+        .logo-text h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: white;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 18px 22px;
+            border-radius: var(--border-radius);
+            background: white;
+            border: none;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-btn i {
+            font-size: 1.3rem;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-btn:hover i, .nav-btn.active i {
+            color: white;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-control {
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 1.05rem;
+            background: white;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h2 i {
+            color: var(--primary);
+        }
+
+        /* 表格样式 - 优化响应式 */
+        .records-container {
+            width: 100%;
+            border-radius: var(--border-radius);
+        }
+        
+        .records-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .records-table thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+        }
+        
+        .records-table th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .records-table th:hover {
+            background-color: #f0f2f5;
+        }
+        
+        .records-table th.sortable::after {
+            content: "↕";
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+        
+        .records-table th.sorted-asc::after {
+            content: "↑";
+            opacity: 1;
+            color: var(--primary);
+        }
+        
+        .records-table th.sorted-desc::after {
+            content: "↓";
+            opacity: 1;
+            color: var(--primary);
+        }
+        
+        .records-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+        }
+        
+        .records-table tbody tr {
+            transition: var(--transition);
+        }
+        
+        .records-table tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .records-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .category-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 货币样式增强 */
+        .currency-label {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: #eef0fd;
+            color: #4361ee;
+            margin-right: 5px;
+        }
+        
+        .currency-hkd {
+            background-color: #e9f9fe;
+            color: #4cc9f0;
+        }
+        
+        .currency-cny {
+            background-color: #fdebf3;
+            color: #f72585;
+        }
+        
+        .currency-jpy {
+            background-color: #fef5e9;
+            color: #f8961e;
+        }
+        
+        .amount-cell {
+            font-weight: 600;
+        }
+        
+        .currency-cell {
+            font-weight: 500;
+            color: var(--gray);
+        }
+        
+        .positive-amount {
+            color: var(--success);
+        }
+        
+        .negative-amount {
+            color: var(--danger);
+        }
+
+        /* 分类背景色 */
+        .category-1-row { background: var(--category-1-light); }
+        .category-2-row { background: var(--category-2-light); }
+        .category-3-row { background: var(--category-3-light); }
+        .category-4-row { background: var(--category-4-light); }
+        .category-5-row { background: var(--category-5-light); }
+        .category-6-row { background: var(--category-6-light); }
+        .category-7-row { background: var(--category-7-light); }
+        .category-8-row { background: var(--category-8-light); }
+        .category-9-row { background: var(--category-9-light); }
+
+        /* 筛选区域新布局 */
+        .filters-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+            grid-column: 1 / -1;
+            justify-content: flex-end;
+        }
+        
+        .reset-btn {
+            padding: 14px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--light);
+            color: var(--gray);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .reset-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px 10px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+        
+        .page-btn {
+            padding: 10px 18px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .page-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--light);
+            color: var(--gray);
+        }
+        
+        .page-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .page-info {
+            font-weight: 500;
+        }
+
+        /* 卡片布局 - 用于小屏幕 */
+        .records-cards {
+            display: none;
+            flex-direction: column;
+            gap: 8px; /* 减小间隙 */
+        }
+        
+        .record-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 0; /* 移除内边距 */
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 卡片顶部 - 使用与电脑版一致的浅色背景 */
+        .record-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px; /* 减小内边距 - 高度缩减 */
+            color: var(--dark); /* 使用深色文字 */
+            font-weight: 600;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* 使用浅色背景 */
+        .card-category-1 .record-card-header { background: var(--category-1-light); }
+        .card-category-2 .record-card-header { background: var(--category-2-light); }
+        .card-category-3 .record-card-header { background: var(--category-3-light); }
+        .card-category-4 .record-card-header { background: var(--category-4-light); }
+        .card-category-5 .record-card-header { background: var(--category-5-light); }
+        .card-category-6 .record-card-header { background: var(--category-6-light); }
+        .card-category-7 .record-card-header { background: var(--category-7-light); }
+        .card-category-8 .record-card-header { background: var(--category-8-light); }
+        .card-category-9 .record-card-header { background: var(--category-9-light); }
+        
+        .record-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .record-category {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem; 
+        }
+        
+        .record-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+            /* 移除背景色和阴影，改为透明 */
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0;
+        }
+        
+        /* 货币与金额融合 */
+        .amount-with-currency {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .currency-symbol {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* 记录详情部分 */
+        .record-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 一行4列 */
+            gap: 6px; /* 减小间隙 */
+            padding: 12px 15px; /* 减小内边距 */
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            min-height: 40px; /* 固定高度 */
+        }
+        
+        .detail-label {
+            font-size: 0.75rem; 
+            color: var(--gray);
+            margin-bottom: 2px; 
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            font-size: 0.85rem; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 条件筛选器 - 默认隐藏 */
+        .conditional-filter {
+            display: none;
+        }
+        .mobile-nav {
+                display: none;
+            }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 0;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            
+            .filters-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 0;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .records-table {
+                display: none;
+            }
+            
+            .records-cards {
+                display: flex;
+            }
+            
+            .filters-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .record-details {
+                grid-template-columns: repeat(4, 1fr); /* 保持4列 */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .record-category {
+                font-size: 0.9rem;
+            }
+            
+            .record-amount {
+                font-size: 1rem;
+            }
+            
+            .record-card-header {
+                padding: 6px 10px; /* 进一步减小内边距 */
+            }
+            
+            .record-details {
+                padding: 10px 12px;
+                gap: 4px;
+            }
+            
+            .detail-item {
+                min-height: 36px;
+            }
+            
+            .detail-label {
+                font-size: 0.7rem;
+            }
+            
+            .detail-value {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-actions {
+                align-self: flex-end;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .record-details {
+                grid-template-columns: repeat(2, 1fr); /* 改为2列 */
+            }
+            
+            .filters-container {
+                grid-template-columns: 1fr;
+            }
+            
+            /* 在超小屏幕上进一步调整分类行高度 */
+            .record-card-header {
+                padding: 5px 8px;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* 旋转动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotating {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 移动端导航栏 */
+        .mobile-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 80px;
+            border-radius: 12px;
+        }
+        
+        .mobile-nav-btn i {
+            font-size: 1.4rem;
+        }
+        
+        .mobile-nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .mobile-nav-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* 筛选器组样式 */
+        .filter-section {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>财务追踪系统</h1>
+                        <p>专业财务分析与可视化</p>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="icon-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="icon-btn" id="helpBtn" title="帮助">
+                        <i class="fas fa-question"></i>
+                    </button>
+                    <button class="icon-btn" id="logoutBtn" title="退出">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="sidebar">
+                    <button class="nav-btn" data-section="add">
+                        <i class="fas fa-plus-circle"></i> 添加记录
+                    </button>
+                    <button class="nav-btn active" data-section="view">
+                        <i class="fas fa-list"></i> 查看记录
+                    </button>
+                    <button class="nav-btn" data-section="stats">
+                        <i class="fas fa-chart-pie"></i> 统计分析
+                    </button>
+                </div>
+                
+                <div class="main-content">
+                    <!-- 查看记录部分 -->
+                    <section class="card fade-in" id="view-section">
+                        <div class="card-header">
+                            <h2><i class="fas fa-list"></i> 交易记录</h2>
+                            <div class="summary">
+                                <span class="total">共 <span id="record-count">18</span> 条记录</span>
+                            </div>
+                        </div>
+                        
+                        <div class="filters-container">
+                            <div class="filter-group">
+                                <label for="filter-year"><i class="fas fa-calendar"></i> 年份</label>
+                                <select id="filter-year" class="form-control">
+                                    <option value="">全部年份</option>
+                                    <option value="2025" selected>2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="filter-month"><i class="fas fa-calendar-alt"></i> 月份</label>
+                                <select id="filter-month" class="form-control">
+                                    <option value="">全部月份</option>
+                                    <option value="5" selected>5月</option>
+                                    <option value="4">4月</option>
+                                    <option value="3">3月</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="filter-category"><i class="fas fa-tag"></i> 分类</label>
+                                <select id="filter-category" class="form-control">
+                                    <option value="">全部分类</option>
+                                    <option value="会员订阅">会员订阅</option>
+                                    <option value="动漫娱乐">动漫娱乐</option>
+                                    <option value="交通出行">交通出行</option>
+                                    <option value="数码科技">数码科技</option>
+                                    <option value="旅行消费">旅行消费</option>
+                                    <option value="生活支出">生活支出</option>
+                                    <option value="收入来源">收入来源</option>
+                                    <option value="网络购物">网络购物</option>
+                                    <option value="饮食消费" selected>饮食消费</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="filter-currency"><i class="fas fa-money-bill-wave"></i> 货币</label>
+                                <select id="filter-currency" class="form-control">
+                                    <option value="">全部货币</option>
+                                    <option value="人民币">人民币 (CNY)</option>
+                                    <option value="港币">港币 (HKD)</option>
+                                    <option value="日元">日元 (JPY)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 条件筛选器 - 默认隐藏 -->
+                            <div class="filter-group conditional-filter" id="subcategory-filter">
+                                <label for="filter-subcategory"><i class="fas fa-list"></i> 子分类</label>
+                                <select id="filter-subcategory" class="form-control">
+                                    <option value="">全部子分类</option>
+                                    <option value="氪金">氪金</option>
+                                    <option value="订阅服务">订阅服务</option>
+                                    <option value="会员费">会员费</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 条件筛选器 - 默认隐藏 -->
+                            <div class="filter-group conditional-filter" id="brand-filter">
+                                <label for="filter-brand"><i class="fas fa-trademark"></i> 品牌</label>
+                                <select id="filter-brand" class="form-control">
+                                    <option value="">全部品牌</option>
+                                    <option value="腾讯">腾讯</option>
+                                    <option value="网易">网易</option>
+                                    <option value="Netflix">Netflix</option>
+                                    <option value="Spotify">Spotify</option>
+                                    <option value="Bandai">Bandai</option>
+                                    <option value="GSC">GSC</option>
+                                    <option value="Sony">Sony</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-actions">
+                                <button class="reset-btn" id="reset-filters">
+                                    <i class="fas fa-redo"></i> 重置所有筛选
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 表格视图（大屏幕） -->
+                        <div class="records-container">
+                            <table class="records-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="date">日期</th>
+                                        <th class="sortable" data-sort="category">分类</th>
+                                        <th class="sortable" data-sort="subcategory">子分类</th>
+                                        <th class="sortable" data-sort="brand">品牌</th>
+                                        <th class="sortable" data-sort="description">描述</th>
+                                        <th class="sortable" data-sort="currency">货币</th>
+                                        <th class="sortable" data-sort="amount">金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="records-body">
+                                    <!-- 记录将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 卡片视图（小屏幕） -->
+                        <div class="records-cards" id="records-cards">
+                            <!-- 记录卡片将通过JavaScript动态加载 -->
+                        </div>
+                        
+                        <div class="pagination">
+                            <div>
+                                <select class="form-control" id="page-size" style="width: auto;">
+                                    <option value="10">每页10条</option>
+                                    <option value="20">每页20条</option>
+                                    <option value="50" selected>每页50条</option>
+                                    <option value="100">每页100条</option>
+                                </select>
+                            </div>
+                            
+                            <div class="page-nav">
+                                <button class="page-btn" id="prev-page"><i class="fas fa-chevron-left"></i> 上一页</button>
+                                <span class="page-info">第 <span id="current-page">1</span> 页 / 共 <span id="total-pages">1</span> 页</span>
+                                <button class="page-btn" id="next-page">下一页 <i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 移动端导航栏 -->
+    <div class="mobile-nav">
+        <button class="mobile-nav-btn" data-section="add">
+            <i class="fas fa-plus-circle"></i>
+            <span>添加</span>
+        </button>
+        <button class="mobile-nav-btn active" data-section="view">
+            <i class="fas fa-list"></i>
+            <span>记录</span>
+        </button>
+        <button class="mobile-nav-btn" data-section="stats">
+            <i class="fas fa-chart-pie"></i>
+            <span>分析</span>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航功能
+            const navButtons = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // 更新活动按钮
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 如果是当前页面，不执行跳转
+                    if (targetSection === 'view') return;
+                    
+                    // 跳转到其他页面
+                    window.location.href = targetSection === 'add' ? 'add-record.html' : 'statistics.html';
+                });
+            });
+            
+            // 交易记录数据
+            let recordsData = [
+                { id: 1, date: '2025-05-16', currency: '港币', amount: -8.00, category: '会员订阅', categoryId: 1, subcategory: '氪金', brand: '腾讯', description: '游戏会员' },
+                { id: 2, date: '2025-05-15', currency: '港币', amount: -47.00, category: '动漫娱乐', categoryId: 2, subcategory: '漫画', brand: '', description: '购买漫画书' },
+                { id: 3, date: '2025-05-14', currency: '港币', amount: -114.00, category: '饮食消费', categoryId: 9, subcategory: '零食', brand: '', description: '披萨外卖' },
+                { id: 4, date: '2025-05-13', currency: '人民币', amount: -30.00, category: '会员订阅', categoryId: 1, subcategory: '氪金', brand: '网易', description: '游戏充值' },
+                { id: 5, date: '2025-05-12', currency: '港币', amount: -26.50, category: '交通出行', categoryId: 3, subcategory: '地铁', brand: 'MTR', description: '上班通勤' },
+                { id: 6, date: '2025-05-12', currency: '人民币', amount: -51.00, category: '饮食消费', categoryId: 9, subcategory: '餐厅', brand: '海底捞', description: '晚餐聚餐' },
+                { id: 7, date: '2025-05-10', currency: '港币', amount: -180.00, category: '动漫娱乐', categoryId: 2, subcategory: '手办', brand: 'Bandai', description: '收藏手办' },
+                { id: 8, date: '2025-05-07', currency: '人民币', amount: -20.24, category: '饮食消费', categoryId: 9, subcategory: '饮料', brand: '喜茶', description: '奶茶' },
+                { id: 9, date: '2025-05-05', currency: '人民币', amount: 8500.00, category: '收入来源', categoryId: 7, subcategory: '工资', brand: '', description: '月薪' },
+                { id: 10, date: '2025-05-01', currency: '人民币', amount: 377.72, category: '收入来源', categoryId: 7, subcategory: '兼职', brand: '', description: '设计项目' },
+                { id: 11, date: '2025-04-28', currency: '日元', amount: -4500.00, category: '动漫娱乐', categoryId: 2, subcategory: '手办', brand: 'GSC', description: '初音未来手办' },
+                { id: 12, date: '2025-04-25', currency: '港币', amount: -120.00, category: '饮食消费', categoryId: 9, subcategory: '餐厅', brand: '元气寿司', description: '午餐' },
+                { id: 13, date: '2025-04-20', currency: '港币', amount: -15.00, category: '交通出行', categoryId: 3, subcategory: '巴士', brand: '九巴', description: '日常通勤' },
+                { id: 14, date: '2025-04-18', currency: '人民币', amount: -99.00, category: '网络购物', categoryId: 8, subcategory: '电子产品', brand: '京东', description: '手机配件' },
+                { id: 15, date: '2025-04-15', currency: '港币', amount: -45.60, category: '生活支出', categoryId: 6, subcategory: '日用品', brand: '百佳', description: '生活用品采购' },
+                { id: 16, date: '2025-04-10', currency: '人民币', amount: 1200.00, category: '收入来源', categoryId: 7, subcategory: '奖金', brand: '', description: '季度奖金' },
+                { id: 17, date: '2025-04-05', currency: '港币', amount: -299.00, category: '数码科技', categoryId: 4, subcategory: '耳机', brand: 'Sony', description: '蓝牙耳机' },
+                { id: 18, date: '2025-04-01', currency: '人民币', amount: -88.00, category: '旅行消费', categoryId: 5, subcategory: '住宿', brand: '如家', description: '酒店住宿' }
+            ];
+            
+            // 当前排序状态
+            let currentSort = {
+                field: 'date',
+                direction: 'desc' // 默认日期倒序（最新在前）
+            };
+            
+            // 当前分页状态
+            let pagination = {
+                currentPage: 1,
+                pageSize: 50,
+                totalPages: 1
+            };
+            
+            // 当前筛选条件
+            let filters = {
+                year: '',
+                month: '',
+                category: '',
+                subcategory: '',
+                brand: '',
+                currency: ''
+            };
+            
+            // 初始化筛选事件监听
+            const filterElements = [
+                'filter-year', 'filter-month', 'filter-category', 
+                'filter-subcategory', 'filter-brand', 'filter-currency'
+            ];
+            
+            filterElements.forEach(id => {
+                document.getElementById(id).addEventListener('change', function() {
+                    filters[id.replace('filter-', '')] = this.value;
+                    
+                    // 显示/隐藏条件筛选器
+                    if (id === 'filter-category' && this.value) {
+                        document.getElementById('subcategory-filter').style.display = 'flex';
+                        document.getElementById('brand-filter').style.display = 'flex';
+                    } else if (id === 'filter-category' && !this.value) {
+                        document.getElementById('subcategory-filter').style.display = 'none';
+                        document.getElementById('brand-filter').style.display = 'none';
+                        // 重置子分类和品牌筛选
+                        document.getElementById('filter-subcategory').value = '';
+                        document.getElementById('filter-brand').value = '';
+                        filters.subcategory = '';
+                        filters.brand = '';
+                    }
+                    
+                    // 重置到第一页
+                    pagination.currentPage = 1;
+                    
+                    // 应用筛选
+                    loadRecords();
+                });
+            });
+            
+            // 重置筛选
+            document.getElementById('reset-filters').addEventListener('click', function() {
+                document.getElementById('filter-year').value = '';
+                document.getElementById('filter-month').value = '';
+                document.getElementById('filter-category').value = '';
+                document.getElementById('filter-subcategory').value = '';
+                document.getElementById('filter-brand').value = '';
+                document.getElementById('filter-currency').value = '';
+                
+                // 隐藏条件筛选器
+                document.getElementById('subcategory-filter').style.display = 'none';
+                document.getElementById('brand-filter').style.display = 'none';
+                
+                filters = {
+                    year: '',
+                    month: '',
+                    category: '',
+                    subcategory: '',
+                    brand: '',
+                    currency: ''
+                };
+                
+                pagination.currentPage = 1;
+                loadRecords();
+            });
+            
+            // 分页功能
+            document.getElementById('page-size').addEventListener('change', function() {
+                pagination.pageSize = parseInt(this.value);
+                pagination.currentPage = 1;
+                loadRecords();
+            });
+            
+            document.getElementById('prev-page').addEventListener('click', function() {
+                if (pagination.currentPage > 1) {
+                    pagination.currentPage--;
+                    loadRecords();
+                }
+            });
+            
+            document.getElementById('next-page').addEventListener('click', function() {
+                if (pagination.currentPage < pagination.totalPages) {
+                    pagination.currentPage++;
+                    loadRecords();
+                }
+            });
+            
+            // 表格排序
+            document.querySelectorAll('.records-table th.sortable').forEach(th => {
+                th.addEventListener('click', function() {
+                    const field = this.getAttribute('data-sort');
+                    
+                    // 如果点击的是当前排序字段，则切换排序方向
+                    if (currentSort.field === field) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // 否则设置新的排序字段，默认降序
+                        currentSort.field = field;
+                        currentSort.direction = 'desc';
+                    }
+                    
+                    // 更新表头样式
+                    document.querySelectorAll('.records-table th').forEach(header => {
+                        header.classList.remove('sorted-asc', 'sorted-desc');
+                    });
+                    
+                    this.classList.add(currentSort.direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                    
+                    // 重新加载记录
+                    loadRecords();
+                });
+            });
+            
+            // 货币符号映射（解决人民币和日元都用¥的问题）
+            function getCurrencySymbol(currency) {
+                const symbols = {
+                    '人民币': 'CN¥',  // 使用CNY符号
+                    '日元': 'JP¥',    // 使用JPY符号
+                    '港币': 'HK$'
+                };
+                return symbols[currency] || currency;
+            }
+            
+            // 货币代码映射（用于卡片视图）
+            function getCurrencyCode(currency) {
+                const codes = {
+                    '人民币': 'CNY',
+                    '日元': 'JPY',
+                    '港币': 'HKD'
+                };
+                return codes[currency] || currency;
+            }
+            
+            // 加载交易记录
+            function loadRecords() {
+                const recordsBody = document.getElementById('records-body');
+                const recordsCards = document.getElementById('records-cards');
+                recordsBody.innerHTML = '';
+                recordsCards.innerHTML = '';
+                
+                // 应用筛选
+                let filteredData = recordsData.filter(record => {
+                    // 年份筛选
+                    if (filters.year && new Date(record.date).getFullYear() != filters.year) {
+                        return false;
+                    }
+                    
+                    // 月份筛选
+                    if (filters.month && (new Date(record.date).getMonth() + 1) != filters.month) {
+                        return false;
+                    }
+                    
+                    // 分类筛选
+                    if (filters.category && record.category !== filters.category) {
+                        return false;
+                    }
+                    
+                    // 子分类筛选
+                    if (filters.subcategory && record.subcategory !== filters.subcategory) {
+                        return false;
+                    }
+                    
+                    // 品牌筛选
+                    if (filters.brand && record.brand !== filters.brand) {
+                        return false;
+                    }
+                    
+                    // 货币筛选
+                    if (filters.currency && record.currency !== filters.currency) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+                
+                // 应用排序
+                filteredData.sort((a, b) => {
+                    let valA, valB;
+                    
+                    switch (currentSort.field) {
+                        case 'date':
+                            valA = new Date(a.date);
+                            valB = new Date(b.date);
+                            break;
+                        case 'amount':
+                            valA = a.amount;
+                            valB = b.amount;
+                            break;
+                        case 'category':
+                        case 'subcategory':
+                        case 'brand':
+                        case 'description':
+                        case 'currency':
+                            valA = a[currentSort.field] || '';
+                            valB = b[currentSort.field] || '';
+                            break;
+                        default:
+                            return 0;
+                    }
+                    
+                    if (typeof valA === 'string') {
+                        return currentSort.direction === 'asc' 
+                            ? valA.localeCompare(valB) 
+                            : valB.localeCompare(valA);
+                    } else {
+                        return currentSort.direction === 'asc' 
+                            ? valA - valB 
+                            : valB - valA;
+                    }
+                });
+                
+                // 更新记录总数
+                document.getElementById('record-count').textContent = filteredData.length;
+                
+                // 分页计算
+                pagination.totalPages = Math.ceil(filteredData.length / pagination.pageSize);
+                document.getElementById('total-pages').textContent = pagination.totalPages;
+                
+                const startIndex = (pagination.currentPage - 1) * pagination.pageSize;
+                const endIndex = Math.min(startIndex + pagination.pageSize, filteredData.length);
+                const pagedData = filteredData.slice(startIndex, endIndex);
+                
+                // 更新分页信息
+                document.getElementById('current-page').textContent = pagination.currentPage;
+                
+                // 渲染表格记录（大屏幕）
+                pagedData.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.className = `fade-in category-${record.categoryId}-row`;
+                    
+                    // 确定金额显示样式
+                    const amountClass = record.amount >= 0 ? 'positive-amount' : 'negative-amount';
+                    const amountSign = record.amount >= 0 ? '+' : '';
+                    
+                    // 货币标签样式
+                    let currencyClass = '';
+                    if (record.currency === '港币') currencyClass = 'currency-hkd';
+                    else if (record.currency === '人民币') currencyClass = 'currency-cny';
+                    else if (record.currency === '日元') currencyClass = 'currency-jpy';
+                    
+                    row.innerHTML = `
+                        <td>${record.date}</td>
+                        <td>${record.category}</td>
+                        <td>${record.subcategory || '-'}</td>
+                        <td>${record.brand || '-'}</td>
+                        <td>${record.description || '-'}</td>
+                        <td class="currency-cell">
+                            <span class="currency-label ${currencyClass}">${record.currency}</span>
+                        </td>
+                        <td class="amount-cell ${amountClass}">
+                            ${amountSign}${record.amount.toFixed(2)}
+                        </td>
+                    `;
+                    
+                    recordsBody.appendChild(row);
+                });
+                
+                // 渲染卡片记录（小屏幕）
+                pagedData.forEach(record => {
+                    const card = document.createElement('div');
+                    card.className = `record-card fade-in card-category-${record.categoryId}`;
+                    
+                    // 确定金额显示样式
+                    const amountClass = record.amount >= 0 ? 'positive-amount' : 'negative-amount';
+                    const amountSign = record.amount >= 0 ? '+' : '';
+                    
+                    // 使用货币代码替代符号（解决人民币和日元符号混淆问题）
+                    const currencyCode = getCurrencyCode(record.currency);
+                    
+                    card.innerHTML = `
+                        <div class="record-card-header">
+                            <div class="record-main-info">
+                                <div class="record-category">
+                                    <i class="fas fa-tag"></i>
+                                    <span>${record.category}</span>
+                                </div>
+                                <div class="record-amount">
+                                    <div class="amount-with-currency ${amountClass}">
+                                        <span class="currency-symbol">${currencyCode}</span>
+                                        <span>${amountSign}${Math.abs(record.amount).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="record-details">
+                            <div class="detail-item">
+                                <span class="detail-label">日期</span>
+                                <span class="detail-value">${record.date}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">子分类</span>
+                                <span class="detail-value">${record.subcategory || '-'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">品牌</span>
+                                <span class="detail-value">${record.brand || '-'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">描述</span>
+                                <span class="detail-value">${record.description || '-'}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    recordsCards.appendChild(card);
+                });
+                
+                // 更新分页按钮状态
+                document.getElementById('prev-page').disabled = pagination.currentPage === 1;
+                document.getElementById('next-page').disabled = pagination.currentPage === pagination.totalPages;
+            }
+            
+            // 刷新按钮
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                this.classList.add('rotating');
+                setTimeout(() => {
+                    this.classList.remove('rotating');
+                    loadRecords();
+                }, 1000);
+            });
+            
+            // 退出按钮
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('确定要退出系统吗？')) {
+                    window.location.href = 'login.html';
+                }
+            });
+            
+            // 初始加载交易记录
+            loadRecords();
+        });
+    </script>
+</body>
+</html>

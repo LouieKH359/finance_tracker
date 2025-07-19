@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务追踪系统 - 登录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --border: 1px solid rgba(255, 255, 255, 0.18);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #4361ee 100%);
+            background-attachment: fixed;
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.25);
+        }
+
+        .login-container h1 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 2.2rem;
+        }
+
+        .login-container p {
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .password-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .password-input input {
+            width: 55px;
+            height: 65px;
+            text-align: center;
+            font-size: 2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .password-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .error-message {
+            color: var(--danger);
+            height: 25px;
+            font-weight: 500;
+            margin: 10px 0;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        .auth-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .login-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes successPulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(76, 201, 240, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
+        }
+
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .password-input input {
+                width: 45px;
+                height: 55px;
+                font-size: 1.7rem;
+            }
+            
+            .logo-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="logo-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h1>个人财务追踪系统</h1>
+        <p>请输入6位数字密码访问您的财务数据</p>
+        
+        <div class="password-container">
+            <div class="password-input">
+                <input type="password" maxlength="1" class="digit" data-index="1" autofocus>
+                <input type="password" maxlength="1" class="digit" data-index="2">
+                <input type="password" maxlength="1" class="digit" data-index="3">
+                <input type="password" maxlength="1" class="digit" data-index="4">
+                <input type="password" maxlength="1" class="digit" data-index="5">
+                <input type="password" maxlength="1" class="digit" data-index="6">
+            </div>
+        </div>
+        
+        <p class="error-message" id="errorMessage"></p>
+        
+        <button class="auth-btn" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> 进入系统
+        </button>
+        
+        <div class="login-footer">
+            安全访问您的财务数据
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const digits = document.querySelectorAll('.digit');
+            const errorMessage = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginContainer = document.getElementById('loginContainer');
+            const correctPassword = '000359';
+            
+            // 自动聚焦第一个输入框
+            digits[0].focus();
+            
+            // 处理数字输入
+            digits.forEach((digit, index) => {
+                digit.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        if (index < digits.length - 1) {
+                            digits[index + 1].focus();
+                        } else {
+                            // 第六位输入后自动登录
+                            setTimeout(attemptLogin, 100);
+                        }
+                    }
+                });
+                
+                // 处理退格键
+                digit.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                });
+            });
+            
+            // 登录函数
+            function attemptLogin() {
+                let enteredPassword = '';
+                digits.forEach(digit => {
+                    enteredPassword += digit.value;
+                });
+                
+                if (enteredPassword === correctPassword) {
+                    // 成功登录效果
+                    errorMessage.textContent = '登录成功，正在进入系统...';
+                    errorMessage.style.color = 'var(--success)';
+                    
+                    // 添加成功动画
+                    loginContainer.style.animation = 'successPulse 1s';
+                    
+                    // 添加成功视觉反馈
+                    digits.forEach(digit => {
+                        digit.style.borderColor = '#4cc9f0';
+                        digit.style.backgroundColor = '#e9f9fe';
+                    });
+                    
+                    setTimeout(() => {
+                        window.location.href = 'statistics.html';
+                    }, 1000);
+                } else {
+                    // 错误处理
+                    errorMessage.textContent = '密码错误，请重试';
+                    errorMessage.style.color = 'var(--danger)';
+                    
+                    // 添加抖动动画
+                    loginContainer.style.animation = 'shake 0.5s';
+                    
+                    // 清除输入框
+                    digits.forEach(digit => {
+                        digit.value = '';
+                        digit.style.borderColor = '#f72585';
+                    });
+                    
+                    // 重置焦点
+                    digits[0].focus();
+                    
+                    // 移除动画
+                    setTimeout(() => {
+                        loginContainer.style.animation = '';
+                    }, 500);
+                    
+                    // 重置错误状态
+                    setTimeout(() => {
+                        errorMessage.textContent = '';
+                        digits.forEach(digit => {
+                            digit.style.borderColor = '#e0e0e0';
+                        });
+                    }, 2000);
+                }
+            }
+            
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', attemptLogin);
+            
+            // 按Enter键提交
+            digits.forEach(digit => {
+                digit.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        attemptLogin();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

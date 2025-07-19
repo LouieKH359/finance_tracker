@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务追踪系统 - 统计分析</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef0fd;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --success-light: #e9f9fe;
+            --danger: #f72585;
+            --danger-light: #fdebf3;
+            --warning: #f8961e;
+            --warning-light: #fef5e9;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --border-radius: 14px;
+            --transition: all 0.3s ease;
+            
+            /* 分类颜色 */
+            --category-1: #4361ee;
+            --category-1-light: #eef0fd;
+            --category-2: #f72585;
+            --category-2-light: #fdebf3;
+            --category-3: #4cc9f0;
+            --category-3-light: #e9f9fe;
+            --category-4: #7209b7;
+            --category-4-light: #f2e9f9;
+            --category-5: #f8961e;
+            --category-5-light: #fef5e9;
+            --category-6: #4895ef;
+            --category-6-light: #e9f1fd;
+            --category-7: #06d6a0;
+            --category-7-light: #e8fbf5;
+            --category-8: #ef476f;
+            --category-8-light: #fdebee;
+            --category-9: #ff9e64;
+            --category-9-light: #fff3ec;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f9fafc 0%, #f0f4f9 100%);
+            color: var(--dark);
+            padding: 20px;
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .dashboard {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.25);
+        }
+
+        .logo-text h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: white;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 18px 22px;
+            border-radius: var(--border-radius);
+            background: white;
+            border: none;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-btn i {
+            font-size: 1.3rem;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-btn:hover i, .nav-btn.active i {
+            color: white;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            min-width: 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h2 i {
+            color: var(--primary);
+        }
+
+        /* 统计分析部分新样式 */
+        .analysis-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .summary-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .summary-card h3 i {
+            color: var(--primary);
+        }
+        
+        .summary-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .summary-item {
+            flex: 1;
+        }
+        
+        .summary-label {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .summary-positive {
+            color: var(--success);
+        }
+        
+        .summary-negative {
+            color: var(--danger);
+        }
+        
+        .summary-comparison {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .chart-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .chart-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .chart-type-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 50px;
+            padding: 5px;
+        }
+        
+        .chart-type-btn {
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .chart-type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .chart-container {
+            height: 350px;
+            position: relative;
+        }
+        
+        .time-trend-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .trend-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .trend-controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .data-selection {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .data-toggle {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .data-option {
+            padding: 8px 15px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .data-option:hover {
+            background: #e0e0e0;
+        }
+        
+        .data-option.selected {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 3px 8px rgba(67, 97, 238, 0.2);
+        }
+        
+        .year-selector-container {
+            margin-top: 10px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            width: 100%;
+        }
+        
+        .year-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .year-selector-header h4 {
+            color: var(--dark);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .year-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .year-option {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .year-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .year-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+        }
+        
+        .year-option i {
+            font-size: 0.8rem;
+        }
+        
+        .category-selector-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            width: 100%;
+        }
+        
+        .category-selector-container.visible {
+            display: block;
+        }
+        
+        .category-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .category-selector-header h4 {
+            color: var(--dark);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-chip {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .category-chip:hover {
+            border-color: var(--primary);
+        }
+        
+        .category-chip.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+        }
+        
+        .color-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .trend-chart-container {
+            height: 350px;
+            margin-top: 15px;
+        }
+        
+        /* 优化选择器样式 */
+        .cascade-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            width: 100%;
+        }
+        
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .selector-group label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .selector-group select {
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .selector-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+        
+        /* 底部图表类型切换 */
+        .bottom-chart-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 50px;
+            padding: 5px;
+        }
+        .mobile-nav {
+                display: none;
+            }
+        /* 响应式设计 - 增强 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 0;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+        }
+            
+            .summary-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container, .trend-chart-container {
+                height: 300px;
+            }
+            
+            /* 级联选择器优化 */
+            .cascade-selector {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chart-controls, .trend-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cascade-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .trend-controls .data-selection {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .year-options {
+                justify-content: center;
+            }
+            
+            .chart-container, .trend-chart-container {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .data-toggle, .chart-type-toggle {
+                width: 100%;
+            }
+            
+            .chart-type-toggle, .bottom-chart-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .chart-controls {
+                gap: 10px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .summary-value {
+                font-size: 1.5rem;
+            }
+            
+            .chart-container, .trend-chart-container {
+                height: 200px;
+            }
+        }
+        
+        /* 移动端导航栏 */
+        .mobile-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 80px;
+            border-radius: 12px;
+        }
+        
+        .mobile-nav-btn i {
+            font-size: 1.4rem;
+        }
+        
+        .mobile-nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .mobile-nav-btn:hover {
+            color: var(--primary);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* 旋转动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotating {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 图标指示器 */
+        .indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .indicator-income {
+            background-color: var(--success);
+        }
+        
+        .indicator-expense {
+            background-color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>财务追踪系统</h1>
+                        <p>专业财务分析与可视化</p>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="icon-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="icon-btn" id="helpBtn" title="帮助">
+                        <i class="fas fa-question"></i>
+                    </button>
+                    <button class="icon-btn" id="logoutBtn" title="退出">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="sidebar">
+                    <button class="nav-btn" data-section="add">
+                        <i class="fas fa-plus-circle"></i> 添加记录
+                    </button>
+                    <button class="nav-btn" data-section="view">
+                        <i class="fas fa-list"></i> 查看记录
+                    </button>
+                    <button class="nav-btn active" data-section="stats">
+                        <i class="fas fa-chart-pie"></i> 统计分析
+                    </button>
+                </div>
+                
+                <div class="main-content">
+                    <!-- 统计分析部分 -->
+                    <section class="card fade-in" id="stats-section">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-pie"></i> 财务分析仪表板</h2>
+                            <p>全面分析您的财务状况与消费模式</p>
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <!-- 顶部：关键指标概览 -->
+                            <div class="summary-row">
+                                <div class="summary-card">
+                                    <h3><i class="fas fa-calendar-alt"></i> 年度财务概览</h3>
+                                    <div class="summary-content">
+                                        <div class="summary-item">
+                                            <div class="summary-label">总收入</div>
+                                            <div class="summary-value summary-positive">+HKD 98,500.00</div>
+                                            <div class="summary-comparison">
+                                                <span class="trend-up"><i class="fas fa-arrow-up"></i> 较去年增加 12.5%</span>
+                                            </div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="summary-label">总支出</div>
+                                            <div class="summary-value summary-negative">-HKD 45,320.50</div>
+                                            <div class="summary-comparison">
+                                                <span class="trend-down"><i class="fas fa-arrow-down"></i> 较去年减少 5.2%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-card">
+                                    <h3><i class="fas fa-calendar-day"></i> 本月财务概览</h3>
+                                    <div class="summary-content">
+                                        <div class="summary-item">
+                                            <div class="summary-label">收入</div>
+                                            <div class="summary-value summary-positive">+HKD 8,877.72</div>
+                                            <div class="summary-comparison">
+                                                <span class="trend-up"><i class="fas fa-arrow-up"></i> 较上月增加 8.3%</span>
+                                            </div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="summary-label">支出</div>
+                                            <div class="summary-value summary-negative">-HKD 3,820.15</div>
+                                            <div class="summary-comparison">
+                                                <span class="trend-down"><i class="fas fa-arrow-down"></i> 较上月减少 3.7%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 中间：分类支出分析 -->
+                            <div class="chart-section">
+                                <div class="chart-controls">
+                                    <div class="cascade-selector">
+                                        <div class="selector-group">
+                                            <label><i class="fas fa-calendar"></i> 年份</label>
+                                            <select class="form-control" id="year-select">
+                                                <option value="all">全部年份</option>
+                                                <option value="2025" selected>2025</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2023">2023</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="selector-group">
+                                            <label><i class="fas fa-calendar-alt"></i> 月份</label>
+                                            <select class="form-control" id="month-select" disabled>
+                                                <option value="all">全部月份</option>
+                                                <option value="1">1月</option>
+                                                <option value="2">2月</option>
+                                                <option value="3">3月</option>
+                                                <option value="4">4月</option>
+                                                <option value="5">5月</option>
+                                                <option value="6">6月</option>
+                                                <option value="7">7月</option>
+                                                <option value="8">8月</option>
+                                                <option value="9">9月</option>
+                                                <option value="10">10月</option>
+                                                <option value="11">11月</option>
+                                                <option value="12">12月</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="selector-group">
+                                            <label><i class="fas fa-calendar-week"></i> 周数</label>
+                                            <select class="form-control" id="week-select" disabled>
+                                                <option value="all">全部周数</option>
+                                                <option value="1">第1周 (1月1日-1月7日)</option>
+                                                <option value="2">第2周 (1月8日-1月14日)</option>
+                                                <option value="3">第3周 (1月15日-1月21日)</option>
+                                                <option value="4">第4周 (1月22日-1月28日)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="selector-group">
+                                            <label><i class="fas fa-tag"></i> 分类</label>
+                                            <select class="form-control" id="category-select">
+                                                <option value="all">全部分类</option>
+                                                <option value="1">会员订阅</option>
+                                                <option value="2">动漫娱乐</option>
+                                                <option value="3">交通出行</option>
+                                                <option value="4">数码科技</option>
+                                                <option value="5">旅行消费</option>
+                                                <option value="6">生活支出</option>
+                                                <option value="7">收入来源</option>
+                                                <option value="8">网络购物</option>
+                                                <option value="9">饮食消费</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="chart-type-toggle">
+                                        <button class="chart-type-btn active" data-chart="bar">
+                                            <i class="fas fa-chart-bar"></i> 柱状图
+                                        </button>
+                                        <button class="chart-type-btn" data-chart="pie">
+                                            <i class="fas fa-chart-pie"></i> 饼图
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <canvas id="distribution-chart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 底部：时间维度趋势图 -->
+                            <div class="time-trend-section">
+                                <div class="trend-controls">
+                                    <div class="trend-controls-row">
+                                        <div class="data-selection">
+                                            <div class="bottom-chart-toggle">
+                                                <button class="chart-type-btn active" data-chart="line">
+                                                    <i class="fas fa-chart-line"></i> 折线图
+                                                </button>
+                                                <button class="chart-type-btn" data-chart="bar">
+                                                    <i class="fas fa-chart-bar"></i> 柱状图
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="data-toggle">
+                                                <div class="data-option selected" data-type="income">
+                                                    <span class="indicator indicator-income"></span>收入
+                                                </div>
+                                                <div class="data-option selected" data-type="expense">
+                                                    <span class="indicator indicator-expense"></span>支出
+                                                </div>
+                                                <div class="data-option" data-type="category">
+                                                    <i class="fas fa-filter"></i>分类筛选
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 改进的年份选择器 -->
+                                    <div class="year-selector-container">
+                                        <div class="year-selector-header">
+                                            <h4><i class="fas fa-calendar-check"></i> 选择年份 (可多选)</h4>
+                                        </div>
+                                        <div class="year-options">
+                                            <div class="year-option selected" data-year="all">
+                                                <i class="fas fa-globe"></i>全部
+                                            </div>
+                                            <div class="year-option" data-year="2025">
+                                                <i class="fas fa-calendar"></i>2025
+                                            </div>
+                                            <div class="year-option" data-year="2024">
+                                                <i class="fas fa-calendar"></i>2024
+                                            </div>
+                                            <div class="year-option" data-year="2023">
+                                                <i class="fas fa-calendar"></i>2023
+                                            </div>
+                                            <div class="year-option" data-year="2022">
+                                                <i class="fas fa-calendar"></i>2022
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="category-selector-container" id="category-selector">
+                                        <div class="category-selector-header">
+                                            <h4><i class="fas fa-tags"></i> 选择分类 (可多选)</h4>
+                                        </div>
+                                        <div class="category-selector">
+                                            <div class="category-chip selected" data-category="all">
+                                                <span class="color-indicator" style="background: #6c757d"></span>
+                                                全部分类
+                                            </div>
+                                            <div class="category-chip" data-category="1">
+                                                <span class="color-indicator" style="background: #4361ee"></span>
+                                                会员订阅
+                                            </div>
+                                            <div class="category-chip" data-category="2">
+                                                <span class="color-indicator" style="background: #f72585"></span>
+                                                动漫娱乐
+                                            </div>
+                                            <div class="category-chip" data-category="3">
+                                                <span class="color-indicator" style="background: #4cc9f0"></span>
+                                                交通出行
+                                            </div>
+                                            <div class="category-chip" data-category="4">
+                                                <span class="color-indicator" style="background: #7209b7"></span>
+                                                数码科技
+                                            </div>
+                                            <div class="category-chip" data-category="5">
+                                                <span class="color-indicator" style="background: #f8961e"></span>
+                                                旅行消费
+                                            </div>
+                                            <div class="category-chip" data-category="6">
+                                                <span class="color-indicator" style="background: #4895ef"></span>
+                                                生活支出
+                                            </div>
+                                            <div class="category-chip" data-category="7">
+                                                <span class="color-indicator" style="background: #06d6a0"></span>
+                                                收入来源
+                                            </div>
+                                            <div class="category-chip" data-category="8">
+                                                <span class="color-indicator" style="background: #ef476f"></span>
+                                                网络购物
+                                            </div>
+                                            <div class="category-chip" data-category="9">
+                                                <span class="color-indicator" style="background: #ff9e64"></span>
+                                                饮食消费
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="trend-chart-container">
+                                    <canvas id="trend-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 移动端导航栏 -->
+    <div class="mobile-nav">
+        <button class="mobile-nav-btn" data-section="add">
+            <i class="fas fa-plus-circle"></i>
+            <span>添加</span>
+        </button>
+        <button class="mobile-nav-btn" data-section="view">
+            <i class="fas fa-list"></i>
+            <span>记录</span>
+        </button>
+        <button class="mobile-nav-btn active" data-section="stats">
+            <i class="fas fa-chart-pie"></i>
+            <span>分析</span>
+        </button>
+    </div>
+
+    <script>
+        // 注册数据标签插件
+        Chart.register(ChartDataLabels);
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航功能
+            const navButtons = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // 更新活动按钮
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 如果是当前页面，不执行跳转
+                    if (targetSection === 'stats') return;
+                    
+                    // 跳转到其他页面
+                    window.location.href = targetSection === 'add' ? 'add-record.html' : 'view-records.html';
+                });
+            });
+            
+            // 年份选择器 - 级联控制
+            document.getElementById('year-select').addEventListener('change', function() {
+                const monthSelect = document.getElementById('month-select');
+                const weekSelect = document.getElementById('week-select');
+                
+                if (this.value === 'all') {
+                    monthSelect.disabled = true;
+                    weekSelect.disabled = true;
+                    monthSelect.value = 'all';
+                    weekSelect.value = 'all';
+                } else {
+                    monthSelect.disabled = false;
+                    // 重置周选择器
+                    weekSelect.disabled = true;
+                    weekSelect.value = 'all';
+                }
+                
+                generateCharts();
+            });
+            
+            // 月份选择器 - 级联控制
+            document.getElementById('month-select').addEventListener('change', function() {
+                const weekSelect = document.getElementById('week-select');
+                
+                if (this.value === 'all') {
+                    weekSelect.disabled = true;
+                    weekSelect.value = 'all';
+                } else {
+                    weekSelect.disabled = false;
+                    // 更新周选择器选项
+                    updateWeekOptions(this.value);
+                }
+                
+                generateCharts();
+            });
+            
+            // 周选择器
+            document.getElementById('week-select').addEventListener('change', generateCharts);
+            
+            // 分类筛选
+            document.getElementById('category-select').addEventListener('change', generateCharts);
+            
+            // 图表类型切换（顶部）
+            document.querySelectorAll('.chart-section .chart-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.chart-section .chart-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    generateCharts();
+                });
+            });
+            
+            // 图表类型切换（底部）
+            document.querySelectorAll('.bottom-chart-toggle .chart-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.bottom-chart-toggle .chart-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    generateCharts();
+                });
+            });
+            
+            // 数据类型选择
+            document.querySelectorAll('.data-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    
+                    if (type === 'category') {
+                        // 切换到分类筛选
+                        document.querySelectorAll('.data-option').forEach(o => {
+                            if (o.getAttribute('data-type') !== 'category') {
+                                o.classList.remove('selected');
+                            }
+                        });
+                        this.classList.add('selected');
+                        document.getElementById('category-selector').classList.add('visible');
+                    } else {
+                        // 切换到收入/支出
+                        this.classList.toggle('selected');
+                        if (this.classList.contains('selected')) {
+                            // 如果收入或支出被选中，确保分类筛选被取消
+                            document.querySelector('.data-option[data-type="category"]').classList.remove('selected');
+                            document.getElementById('category-selector').classList.remove('visible');
+                        }
+                    }
+                    
+                    generateCharts();
+                });
+            });
+            
+            // 分类选择器
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    if (this.getAttribute('data-category') === 'all') {
+                        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                    } else {
+                        document.querySelector('.category-chip[data-category="all"]').classList.remove('selected');
+                        this.classList.toggle('selected');
+                        
+                        // 如果没有选中任何分类，则自动选择"全部"
+                        const selected = document.querySelectorAll('.category-chip.selected');
+                        if (selected.length === 0) {
+                            document.querySelector('.category-chip[data-category="all"]').classList.add('selected');
+                        }
+                    }
+                    
+                    generateCharts();
+                });
+            });
+            
+            // 年份选择（多选）
+            document.querySelectorAll('.year-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const year = this.getAttribute('data-year');
+                    
+                    if (year === 'all') {
+                        // 选择"全部"时，取消其他选择
+                        document.querySelectorAll('.year-option').forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    } else {
+                        // 取消"全部"选项
+                        document.querySelector('.year-option[data-year="all"]').classList.remove('selected');
+                        
+                        // 切换当前选项
+                        this.classList.toggle('selected');
+                        
+                        // 如果没有选中任何年份，则自动选择"全部"
+                        const selected = document.querySelectorAll('.year-option.selected');
+                        if (selected.length === 0) {
+                            document.querySelector('.year-option[data-year="all"]').classList.add('selected');
+                        }
+                    }
+                    
+                    generateCharts();
+                });
+            });
+
+            // 更新周选择器选项
+            function updateWeekOptions(month) {
+                const weekSelect = document.getElementById('week-select');
+                weekSelect.innerHTML = '<option value="all">全部周数</option>';
+                
+                // 根据月份添加周数选项
+                const weeks = [
+                    `第1周 (${month}月1日-${month}月7日)`,
+                    `第2周 (${month}月8日-${month}月14日)`,
+                    `第3周 (${month}月15日-${month}月21日)`,
+                    `第4周 (${month}月22日-${month}月28日)`,
+                    `第5周 (${month}月29日-${month}月31日)`
+                ];
+                
+                weeks.forEach((week, index) => {
+                    const option = document.createElement('option');
+                    option.value = index + 1;
+                    option.textContent = week;
+                    weekSelect.appendChild(option);
+                });
+            }
+            
+            // 生成图表
+            function generateCharts() {
+                renderDistributionChart();
+                renderTrendChart();
+            }
+            
+            // 渲染分布图表（条形图/饼图）
+            function renderDistributionChart() {
+                const ctx = document.getElementById('distribution-chart').getContext('2d');
+                
+                // 销毁现有图表
+                if (window.distributionChart) {
+                    window.distributionChart.destroy();
+                }
+                
+                // 获取当前图表类型
+                const chartType = document.querySelector('.chart-section .chart-type-btn.active').getAttribute('data-chart');
+                
+                // 获取选中的分类
+                const category = document.getElementById('category-select').value;
+                
+                // 示例数据 - 根据选中的分类显示不同数据
+                let categories, expenses, colors;
+                
+                if (category === 'all') {
+                    // 全部分类
+                    categories = ['饮食消费', '会员订阅', '交通出行', '数码科技', '网络购物', '旅行消费', '生活支出', '动漫娱乐'];
+                    expenses = [12500, 8200, 6300, 4800, 7500, 4200, 3800, 5600];
+                    colors = ['#ff9e64', '#4361ee', '#4cc9f0', '#7209b7', '#ef476f', '#f8961e', '#4895ef', '#f72585'];
+                } else {
+                    // 单个分类 - 显示子分类数据
+                    const categoryName = document.querySelector(`#category-select option[value="${category}"]`).textContent;
+                    categories = ['氪金', '订阅服务', '会员费', '游戏内购', '软件许可'];
+                    expenses = [4500, 3200, 2800, 1800, 1500];
+                    
+                    // 根据分类ID设置颜色
+                    const categoryColors = {
+                        '1': '#4361ee',
+                        '2': '#f72585',
+                        '3': '#4cc9f0',
+                        '4': '#7209b7',
+                        '5': '#f8961e',
+                        '6': '#4895ef',
+                        '7': '#06d6a0',
+                        '8': '#ef476f',
+                        '9': '#ff9e64'
+                    };
+                    
+                    colors = categories.map(() => categoryColors[category]);
+                }
+                
+                if (chartType === 'pie') {
+                    window.distributionChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: categories,
+                            datasets: [{
+                                data: expenses,
+                                backgroundColor: colors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.raw || 0;
+                                            const total = context.chart.getDatasetMeta(0).total;
+                                            const percentage = Math.round((value / total) * 100);
+                                            return `${label}: HKD ${value.toFixed(2)} (${percentage}%)`;
+                                        }
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: category === 'all' ? '分类支出分布' : document.querySelector(`#category-select option[value="${category}"]`).textContent + '子分类支出分布',
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                // 饼图添加数据标签
+                                datalabels: {
+                                    formatter: (value, ctx) => {
+                                        const total = ctx.chart.getDatasetMeta(0).total;
+                                        const percentage = (value * 100 / total).toFixed(1) + '%';
+                                        return percentage;
+                                    },
+                                    color: '#fff',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+                } else {
+                    window.distributionChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: categories,
+                            datasets: [{
+                                label: '支出金额 (HKD)',
+                                data: expenses,
+                                backgroundColor: colors,
+                                borderColor: colors.map(color => color.replace('0.8', '1')),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                title: {
+                                    display: true,
+                                    text: category === 'all' ? '分类支出分布' : document.querySelector(`#category-select option[value="${category}"]`).textContent + '子分类支出分布',
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                // 柱状图添加数据标签
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'right',
+                                    formatter: function(value) {
+                                        return 'HKD ' + value.toLocaleString();
+                                    },
+                                    color: '#333',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 12
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: '金额 (HKD)'
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+                }
+            }
+            
+            // 渲染趋势图表
+            function renderTrendChart() {
+                const ctx = document.getElementById('trend-chart').getContext('2d');
+                
+                // 销毁现有图表
+                if (window.trendChart) {
+                    window.trendChart.destroy();
+                }
+                
+                // 获取选中的图表类型
+                const chartType = document.querySelector('.bottom-chart-toggle .chart-type-btn.active').getAttribute('data-chart');
+                
+                // 获取选中的年份
+                const selectedYears = Array.from(document.querySelectorAll('.year-option.selected'))
+                    .map(option => option.getAttribute('data-year'))
+                    .filter(year => year !== 'all');
+                
+                // 是否显示全部年份
+                const showAllYears = selectedYears.length === 0 || 
+                    document.querySelector('.year-option[data-year="all"]').classList.contains('selected');
+                
+                // 获取选中的数据类型
+                const incomeSelected = document.querySelector('.data-option[data-type="income"]').classList.contains('selected');
+                const expenseSelected = document.querySelector('.data-option[data-type="expense"]').classList.contains('selected');
+                const categorySelected = document.querySelector('.data-option[data-type="category"]').classList.contains('selected');
+                
+                // 准备数据
+                let labels, datasets;
+                
+                if (showAllYears) {
+                    // 显示所有年份数据
+                    labels = ['2020', '2021', '2022', '2023', '2024', '2025'];
+                    
+                    datasets = [];
+                    
+                    if (incomeSelected) {
+                        datasets.push({
+                            label: '收入',
+                            data: [68000, 72000, 78500, 82000, 87500, 98500],
+                            backgroundColor: 'rgba(6, 214, 160, 0.2)',
+                            borderColor: '#06d6a0',
+                            borderWidth: 2
+                        });
+                    }
+                    
+                    if (expenseSelected) {
+                        datasets.push({
+                            label: '支出',
+                            data: [35000, 38000, 41000, 42500, 43200, 45320],
+                            backgroundColor: 'rgba(239, 71, 111, 0.2)',
+                            borderColor: '#ef476f',
+                            borderWidth: 2
+                        });
+                    }
+                } else {
+                    // 显示选中年份数据
+                    labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                    
+                    datasets = [];
+                    
+                    // 为每个选中年份创建数据集
+                    selectedYears.forEach(year => {
+                        if (incomeSelected) {
+                            // 生成12个月的随机收入数据
+                            const incomeData = Array.from({length: 12}, () => Math.floor(Math.random() * 10000) + 5000);
+                            datasets.push({
+                                label: `${year}年收入`,
+                                data: incomeData,
+                                backgroundColor: `rgba(6, 214, 160, ${year === '2025' ? '0.5' : '0.2'})`,
+                                borderColor: year === '2025' ? '#06d6a0' : '#06d6a080',
+                                borderWidth: 2,
+                                fill: false
+                            });
+                        }
+                        
+                        if (expenseSelected) {
+                            // 生成12个月的随机支出数据
+                            const expenseData = Array.from({length: 12}, () => Math.floor(Math.random() * 5000) + 2000);
+                            datasets.push({
+                                label: `${year}年支出`,
+                                data: expenseData,
+                                backgroundColor: `rgba(239, 71, 111, ${year === '2025' ? '0.5' : '0.2'})`,
+                                borderColor: year === '2025' ? '#ef476f' : '#ef476f80',
+                                borderWidth: 2,
+                                fill: false
+                            });
+                        }
+                    });
+                }
+                
+                // 分类数据集
+                if (categorySelected) {
+                    // 获取选中的分类
+                    const selectedCategories = Array.from(document.querySelectorAll('.category-chip.selected'))
+                        .filter(chip => chip.getAttribute('data-category') !== 'all')
+                        .map(chip => chip.getAttribute('data-category'));
+                    
+                    // 分类颜色映射
+                    const categoryColors = {
+                        '1': '#4361ee',
+                        '2': '#f72585',
+                        '3': '#4cc9f0',
+                        '4': '#7209b7',
+                        '5': '#f8961e',
+                        '6': '#4895ef',
+                        '7': '#06d6a0',
+                        '8': '#ef476f',
+                        '9': '#ff9e64'
+                    };
+                    
+                    // 分类名称映射
+                    const categoryNames = {
+                        '1': '会员订阅',
+                        '2': '动漫娱乐',
+                        '3': '交通出行',
+                        '4': '数码科技',
+                        '5': '旅行消费',
+                        '6': '生活支出',
+                        '7': '收入来源',
+                        '8': '网络购物',
+                        '9': '饮食消费'
+                    };
+                    
+                    // 为每个选中的分类添加数据集
+                    selectedCategories.forEach(cat => {
+                        // 生成随机数据
+                        const data = Array.from({length: 12}, () => Math.floor(Math.random() * 5000) + 1000);
+                        
+                        datasets.push({
+                            label: categoryNames[cat],
+                            data: data,
+                            backgroundColor: `${categoryColors[cat]}40`,
+                            borderColor: categoryColors[cat],
+                            borderWidth: 2,
+                            fill: false
+                        });
+                    });
+                }
+                
+                // 创建图表
+                window.trendChart = new Chart(ctx, {
+                    type: chartType,
+                    data: {
+                        labels: labels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: showAllYears ? '年度收支趋势' : '月度收支趋势（多年度）',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            // 为柱状图添加数据标签
+                            datalabels: {
+                                display: function(context) {
+                                    // 只在柱状图上显示标签
+                                    return context.chart.config.type === 'bar';
+                                },
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: function(value) {
+                                    return 'HKD ' + value.toLocaleString();
+                                },
+                                color: '#333',
+                                font: {
+                                    weight: 'bold',
+                                    size: 11
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '金额 (HKD)'
+                                }
+                            }
+                        }
+                    },
+                    // 注册数据标签插件
+                    plugins: [ChartDataLabels]
+                });
+            }
+            
+            // 初始加载
+            generateCharts();
+            
+            // 刷新按钮
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                this.classList.add('rotating');
+                setTimeout(() => {
+                    this.classList.remove('rotating');
+                    generateCharts();
+                }, 1000);
+            });
+            
+            // 退出按钮
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('确定要退出系统吗？')) {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

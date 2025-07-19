@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务追踪系统 - 添加记录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #eef0fd;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --success-light: #e9f9fe;
+            --danger: #f72585;
+            --danger-light: #fdebf3;
+            --warning: #f8961e;
+            --warning-light: #fef5e9;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #f0f2f5;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --border-radius: 14px;
+            --transition: all 0.3s ease;
+            
+            /* 分类颜色 */
+            --category-1: #4361ee;
+            --category-1-light: #eef0fd;
+            --category-2: #f72585;
+            --category-2-light: #fdebf3;
+            --category-3: #4cc9f0;
+            --category-3-light: #e9f9fe;
+            --category-4: #7209b7;
+            --category-4-light: #f2e9f9;
+            --category-5: #f8961e;
+            --category-5-light: #fef5e9;
+            --category-6: #4895ef;
+            --category-6-light: #e9f1fd;
+            --category-7: #06d6a0;
+            --category-7-light: #e8fbf5;
+            --category-8: #ef476f;
+            --category-8-light: #fdebee;
+            --category-9: #ff9e64;
+            --category-9-light: #fff3ec;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f9fafc 0%, #f0f4f9 100%);
+            color: var(--dark);
+            padding: 20px;
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* 主仪表盘样式 */
+        .dashboard {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.25);
+        }
+
+        .logo-text h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: white;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 18px 22px;
+            border-radius: var(--border-radius);
+            background: white;
+            border: none;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-btn i {
+            font-size: 1.3rem;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-btn:hover i, .nav-btn.active i {
+            color: white;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h2 i {
+            color: var(--primary);
+        }
+
+        /* 添加记录表单样式 */
+        .form-section {
+            margin-bottom: 28px;
+            transition: var(--transition);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-row-full {
+            display: block;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 1.05rem;
+            background: white;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .option-btn {
+            padding: 14px 10px;
+            border-radius: 12px;
+            border: none;
+            color: var(--dark);
+            font-size: 1.05rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            height: 60px;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .option-btn.selected {
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* 分类按钮样式 */
+        .category-btn {
+            background: rgba(67, 97, 238, 0.1);
+            border: 2px solid rgba(67, 97, 238, 0.15);
+            color: var(--dark);
+        }
+        
+        .category-btn.category-1 { background: rgba(67, 97, 238, 0.1); border-color: rgba(67, 97, 238, 0.2); }
+        .category-btn.category-2 { background: rgba(247, 37, 133, 0.1); border-color: rgba(247, 37, 133, 0.2); }
+        .category-btn.category-3 { background: rgba(76, 201, 240, 0.1); border-color: rgba(76, 201, 240, 0.2); }
+        .category-btn.category-4 { background: rgba(114, 9, 183, 0.1); border-color: rgba(114, 9, 183, 0.2); }
+        .category-btn.category-5 { background: rgba(248, 150, 30, 0.1); border-color: rgba(248, 150, 30, 0.2); }
+        .category-btn.category-6 { background: rgba(72, 149, 239, 0.1); border-color: rgba(72, 149, 239, 0.2); }
+        .category-btn.category-7 { background: rgba(6, 214, 160, 0.1); border-color: rgba(6, 214, 160, 0.2); }
+        .category-btn.category-8 { background: rgba(239, 71, 111, 0.1); border-color: rgba(239, 71, 111, 0.2); }
+        .category-btn.category-9 { background: rgba(255, 158, 100, 0.1); border-color: rgba(255, 158, 100, 0.2); }
+        
+        .category-btn.category-1.selected { background: var(--category-1); border-color: var(--category-1); color: white; }
+        .category-btn.category-2.selected { background: var(--category-2); border-color: var(--category-2); color: white; }
+        .category-btn.category-3.selected { background: var(--category-3); border-color: var(--category-3); color: white; }
+        .category-btn.category-4.selected { background: var(--category-4); border-color: var(--category-4); color: white; }
+        .category-btn.category-5.selected { background: var(--category-5); border-color: var(--category-5); color: white; }
+        .category-btn.category-6.selected { background: var(--category-6); border-color: var(--category-6); color: white; }
+        .category-btn.category-7.selected { background: var(--category-7); border-color: var(--category-7); color: white; }
+        .category-btn.category-8.selected { background: var(--category-8); border-color: var(--category-8); color: white; }
+        .category-btn.category-9.selected { background: var(--category-9); border-color: var(--category-9); color: white; }
+
+        /* 货币、子分类、品牌按钮选中样式 */
+        .currency-btn.selected { 
+            background: var(--primary); 
+            color: white; 
+            border-color: var(--primary);
+        }
+        
+        .subcategory-btn, .brand-btn { 
+            background: rgba(67, 97, 238, 0.1);
+            border: 2px solid rgba(67, 97, 238, 0.15);
+            color: var(--dark);
+        }
+        
+        .subcategory-btn.selected, .brand-btn.selected { 
+            background: var(--secondary); 
+            color: white; 
+            border-color: var(--secondary);
+        }
+
+        .sub-form {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            margin-bottom: 20px;
+        }
+
+        .sub-form.visible {
+            max-height: 500px;
+        }
+
+        .subcategory-header, .brand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 18px rgba(67, 97, 238, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        /* 模板功能样式 */
+        .template-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .template-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .template-header h3 i {
+            color: var(--primary);
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .template-btn {
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .save-template-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .save-template-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+        }
+        
+        .templates-container {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        
+        .templates-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        
+        .template-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .template-name i {
+            color: var(--primary);
+        }
+        
+        .template-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        
+        .template-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .template-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .template-value {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        .template-action-btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .use-template-btn {
+            background: var(--success-light);
+            color: var(--success);
+            border: none;
+        }
+        
+        .use-template-btn:hover {
+            background: var(--success);
+            color: white;
+        }
+        
+        .edit-template-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+        }
+        
+        .edit-template-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .delete-template-btn {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: none;
+        }
+        
+        .delete-template-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .no-templates {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-style: italic;
+            background: white;
+            border-radius: var(--border-radius);
+        }
+        
+        .no-templates i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .template-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .template-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .template-modal.visible .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--dark);
+            transform: rotate(90deg);
+        }
+        
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        
+        .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .modal-form-group label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .modal-form-group input {
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 1rem;
+            background: white;
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .modal-form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .cancel-btn {
+            background: var(--light);
+            color: var(--gray);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .cancel-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .save-modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .save-modal-btn:hover {
+            background: var(--secondary);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* 旋转动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotating {
+            animation: spin 1s linear infinite;
+        }
+        .mobile-nav {
+                display: none;
+            }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 0;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .templates-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .template-actions {
+                flex-wrap: wrap;
+            }
+            
+            .template-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* 移动端导航栏 */
+        .mobile-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 80px;
+            border-radius: 12px;
+        }
+        
+        .mobile-nav-btn i {
+            font-size: 1.4rem;
+        }
+        
+        .mobile-nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .mobile-nav-btn:hover {
+            color: var(--primary);
+        }
+
+        /* 统一子分类和品牌按钮设计 */
+        .subcategory-btn, .brand-btn {
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subcategory-btn:hover, .brand-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .subcategory-btn::after, .brand-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .subcategory-btn:hover::after, .brand-btn:hover::after {
+            opacity: 1;
+        }
+        
+        .input-btn {
+            padding: 14px 10px;
+            border-radius: 12px;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            color: var(--gray);
+            font-size: 1.05rem;
+            font-weight: 500;
+            background: rgba(67, 97, 238, 0.1);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 60px;
+            cursor: text;
+            outline: none;
+            width: 100%;
+        }
+        .input-btn:focus, .input-btn.input-selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        .input-btn::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
+        
+        .input-btn:focus::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* 统一设计标题 */
+        .form-section h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 8px;
+        }
+        
+        .form-section h3 i {
+            font-size: 1.1rem;
+        }
+
+        /* 添加的弹窗样式 */
+        .toast-notification {
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 18px 30px;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .toast-content p {
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--success);
+            border-radius: 0 0 0 14px;
+            width: 100%;
+            animation: progress 3s linear forwards;
+        }
+
+        @keyframes progress {
+            from { width: 100%; }
+            to { width: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>财务追踪系统</h1>
+                        <p>专业财务分析与可视化</p>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="icon-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="icon-btn" id="helpBtn" title="帮助">
+                        <i class="fas fa-question"></i>
+                    </button>
+                    <button class="icon-btn" id="logoutBtn" title="退出">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="sidebar">
+                    <button class="nav-btn active" data-section="add">
+                        <i class="fas fa-plus-circle"></i> 添加记录
+                    </button>
+                    <button class="nav-btn" data-section="view">
+                        <i class="fas fa-list"></i> 查看记录
+                    </button>
+                    <button class="nav-btn" data-section="stats">
+                        <i class="fas fa-chart-pie"></i> 统计分析
+                    </button>
+                </div>
+                
+                <div class="main-content">
+                    <!-- 添加记录部分 -->
+                    <section class="card fade-in" id="add-section">
+                        <div class="card-header">
+                            <h2><i class="fas fa-plus-circle"></i> 添加新记录</h2>
+                        </div>
+                        
+                        <form id="transaction-form">
+                            <!-- 日期部分 - 单独一行 -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-calendar"></i> 交易日期</h3>
+                                <div class="form-group">
+                                    <input type="date" id="date" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <!-- 货币类型和金额 - 第二行 -->
+                            <div class="form-row">
+                                <div class="form-section">
+                                    <h3><i class="fas fa-money-bill-wave"></i> 货币类型</h3>
+                                    <div class="btn-grid">
+                                        <button type="button" class="option-btn currency-btn selected" data-currency="港币">
+                                            <i class="fas fa-dollar-sign"></i> 港币
+                                        </button>
+                                        <button type="button" class="option-btn currency-btn" data-currency="人民币">
+                                            <i class="fas fa-yen-sign"></i> 人民币
+                                        </button>
+                                        <button type="button" class="option-btn currency-btn" data-currency="日元">
+                                            <i class="fas fa-yen-sign"></i> 日元
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-section">
+                                    <h3><i class="fas fa-coins"></i> 交易金额</h3>
+                                    <div class="form-group">
+                                        <input type="number" id="amount" class="form-control" step="0.01" placeholder="0.00" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 分类部分 - 第三行 -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-tag"></i> 交易分类</h3>
+                                <div class="btn-grid">
+                                    <button type="button" class="option-btn category-btn category-1" data-category="会员订阅" data-id="1">
+                                        <i class="fas fa-crown"></i> 会员订阅
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-2" data-category="动漫娱乐" data-id="2">
+                                        <i class="fas fa-gamepad"></i> 动漫娱乐
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-3" data-category="交通出行" data-id="3">
+                                        <i class="fas fa-bus"></i> 交通出行
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-4" data-category="数码科技" data-id="4">
+                                        <i class="fas fa-laptop"></i> 数码科技
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-5" data-category="旅行消费" data-id="5">
+                                        <i class="fas fa-plane"></i> 旅行消费
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-6" data-category="生活支出" data-id="6">
+                                        <i class="fas fa-home"></i> 生活支出
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-7" data-category="收入来源" data-id="7">
+                                        <i class="fas fa-money-bill-wave"></i> 收入来源
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-8" data-category="网络购物" data-id="8">
+                                        <i class="fas fa-shopping-bag"></i> 网络购物
+                                    </button>
+                                    <button type="button" class="option-btn category-btn category-9" data-category="饮食消费" data-id="9">
+                                        <i class="fas fa-utensils"></i> 饮食消费
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 子分类部分 - 初始隐藏 -->
+                            <div class="form-section sub-form" id="subcategory-section">
+                                <h3><i class="fas fa-list"></i> 子分类</h3>
+                                <div class="btn-grid" id="subcategory-group">
+                                    <button type="button" class="option-btn subcategory-btn" data-subcategory="氪金">氪金</button>
+                                    <button type="button" class="option-btn subcategory-btn" data-subcategory="订阅服务">订阅服务</button>
+                                    <button type="button" class="option-btn subcategory-btn" data-subcategory="会员费">会员费</button>
+                                    <button type="button" class="option-btn subcategory-btn" data-subcategory="游戏内购">游戏内购</button>
+                                    <button type="button" class="option-btn subcategory-btn" data-subcategory="软件许可">软件许可</button>
+                                    
+                                    <!-- 输入框样式 -->
+                                    <input type="text" class="input-btn" id="new-subcategory-input" placeholder="输入新子分类...">
+                                </div>
+                            </div>
+                            
+                            <!-- 品牌部分 - 初始隐藏 -->
+                            <div class="form-section sub-form" id="brand-section">
+                                <h3><i class="fas fa-trademark"></i> 品牌/商家</h3>
+                                <div class="btn-grid" id="brand-group">
+                                    <button type="button" class="option-btn brand-btn" data-brand="腾讯">腾讯</button>
+                                    <button type="button" class="option-btn brand-btn" data-brand="Netflix">Netflix</button>
+                                    <button type="button" class="option-btn brand-btn" data-brand="Spotify">Spotify</button>
+                                    <button type="button" class="option-btn brand-btn" data-brand="Apple">Apple</button>
+                                    <button type="button" class="option-btn brand-btn" data-brand="Adobe">Adobe</button>
+                                    
+                                    <!-- 输入框样式 -->
+                                    <input type="text" class="input-btn" id="new-brand-input" placeholder="输入新品牌...">
+                                </div>
+                            </div>
+                            
+                            <!-- 描述部分 -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-comment"></i> 交易描述 <small>(可选)</small></h3>
+                                <div class="form-group">
+                                    <input type="text" id="description" class="form-control" placeholder="请输入交易描述...">
+                                </div>
+                            </div>
+                            
+                            <!-- 提交按钮 -->
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-check"></i> 添加记录
+                            </button>
+                        </form>
+                        
+                        <!-- 模板功能区域 -->
+                        <div class="template-section">
+                            <div class="template-header">
+                                <h3><i class="fas fa-clone"></i> 模板功能</h3>
+                                <button class="template-btn save-template-btn" id="save-template-btn">
+                                    <i class="fas fa-plus-circle"></i> 保存为模板
+                                </button>
+                            </div>
+                            
+                            <div class="templates-container">
+                                <div class="templates-list" id="templates-list">
+                                    <!-- 模板将通过JavaScript动态加载 -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模板编辑模态框 -->
+    <div class="template-modal" id="template-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">保存新模板</h3>
+                <button class="close-modal" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-form">
+                <div class="modal-form-group">
+                    <label for="template-name">模板名称</label>
+                    <input type="text" id="template-name" placeholder="输入模板名称..." required>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel-btn" id="cancel-modal">取消</button>
+                    <button class="modal-btn save-modal-btn" id="save-modal">更新模板</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 移动端导航栏 -->
+    <div class="mobile-nav">
+        <button class="mobile-nav-btn active" data-section="add">
+            <i class="fas fa-plus-circle"></i>
+            <span>添加</span>
+        </button>
+        <button class="mobile-nav-btn" data-section="view">
+            <i class="fas fa-list"></i>
+            <span>记录</span>
+        </button>
+        <button class="mobile-nav-btn" data-section="stats">
+            <i class="fas fa-chart-pie"></i>
+            <span>分析</span>
+        </button>
+    </div>
+
+    <!-- 添加记录成功的弹窗 -->
+    <div class="toast-notification" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="toast-content">
+            <h3>记录添加成功！</h3>
+            <p id="toast-message">新的财务记录已保存至系统</p>
+        </div>
+        <div class="progress-bar"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航功能
+            const navButtons = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // 更新活动按钮
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 如果是当前页面，不执行跳转
+                    if (targetSection === 'add') return;
+                    
+                    // 跳转到其他页面
+                    window.location.href = targetSection === 'view' ? 'view-records.html' : 'statistics.html';
+                });
+            });
+            
+            // 设置默认日期为今天
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('date').value = `${year}-${month}-${day}`;
+            
+            // 货币类型选择
+            const currencyBtns = document.querySelectorAll('.currency-btn');
+            
+            currencyBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currencyBtns.forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 分类选择
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    categoryBtns.forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // 显示子分类和品牌部分
+                    document.getElementById('subcategory-section').classList.add('visible');
+                    document.getElementById('brand-section').classList.add('visible');
+                });
+            });
+            
+            // 子分类选择
+            const subcategoryBtns = document.querySelectorAll('.subcategory-btn');
+            const newSubcategoryInput = document.getElementById('new-subcategory-input');
+            
+            subcategoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的选中状态
+                    subcategoryBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // 取消输入框的选中状态
+                    newSubcategoryInput.classList.remove('input-selected');
+                    
+                    // 选中当前按钮
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 品牌选择
+            const brandBtns = document.querySelectorAll('.brand-btn');
+            const newBrandInput = document.getElementById('new-brand-input');
+            
+            brandBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的选中状态
+                    brandBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // 取消输入框的选中状态
+                    newBrandInput.classList.remove('input-selected');
+                    
+                    // 选中当前按钮
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 子分类输入框交互
+            newSubcategoryInput.addEventListener('focus', function() {
+                // 移除所有按钮的选中状态
+                subcategoryBtns.forEach(b => b.classList.remove('selected'));
+                
+                // 设置输入框为选中状态
+                this.classList.add('input-selected');
+                
+                // 选中输入框内容
+                this.select();
+            });
+            
+            newSubcategoryInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.add('input-selected');
+                } else {
+                    this.classList.remove('input-selected');
+                }
+            });
+            
+            // 品牌输入框交互
+            newBrandInput.addEventListener('focus', function() {
+                // 移除所有按钮的选中状态
+                brandBtns.forEach(b => b.classList.remove('selected'));
+                
+                // 设置输入框为选中状态
+                this.classList.add('input-selected');
+                
+                // 选中输入框内容
+                this.select();
+            });
+            
+            newBrandInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.add('input-selected');
+                } else {
+                    this.classList.remove('input-selected');
+                }
+            });
+            
+            // 表单提交
+            document.getElementById('transaction-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 获取表单值
+                const date = document.getElementById('date').value;
+                const currency = document.querySelector('.currency-btn.selected')?.getAttribute('data-currency') || '港币';
+                const amount = parseFloat(document.getElementById('amount').value);
+                const category = document.querySelector('.category-btn.selected')?.getAttribute('data-category') || '';
+                const categoryId = document.querySelector('.category-btn.selected')?.getAttribute('data-id') || '';
+                
+                // 获取子分类
+                let subcategory = '';
+                if (newSubcategoryInput.classList.contains('input-selected') && newSubcategoryInput.value.trim()) {
+                    subcategory = newSubcategoryInput.value.trim();
+                } else {
+                    subcategory = document.querySelector('.subcategory-btn.selected')?.getAttribute('data-subcategory') || '';
+                }
+                
+                // 获取品牌
+                let brand = '';
+                if (newBrandInput.classList.contains('input-selected') && newBrandInput.value.trim()) {
+                    brand = newBrandInput.value.trim();
+                } else {
+                    brand = document.querySelector('.brand-btn.selected')?.getAttribute('data-brand') || '';
+                }
+                
+                const description = document.getElementById('description').value;
+                
+                if (!category) {
+                    alert('请选择分类');
+                    return;
+                }
+                
+                if (isNaN(amount)) {
+                    alert('请输入有效的金额');
+                    return;
+                }
+                
+                // 显示成功消息
+                showToast(`${date} ${category} ${currency}${amount.toFixed(2)} 已保存`);
+                
+                // 重置表单
+                this.reset();
+                document.getElementById('date').value = `${year}-${month}-${day}`;
+                document.querySelector('[data-currency="港币"]').click();
+
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // 清空输入框内容但保留显示
+                newSubcategoryInput.value = '';
+                newBrandInput.value = '';
+                
+                // 移除输入框的选中状态
+                newSubcategoryInput.classList.remove('input-selected');
+                newBrandInput.classList.remove('input-selected');
+                
+                // 隐藏子分类和品牌部分
+                document.getElementById('subcategory-section').classList.remove('visible');
+                document.getElementById('brand-section').classList.remove('visible');
+            });
+            
+            // 刷新按钮
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                this.classList.add('rotating');
+                setTimeout(() => {
+                    this.classList.remove('rotating');
+                }, 1000);
+            });
+            
+            // 退出按钮
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('确定要退出系统吗？')) {
+                    alert('您已成功退出系统');
+                }
+            });
+            
+            // 模板功能
+            let templates = JSON.parse(localStorage.getItem('templates')) || [];
+            let editingTemplateId = null;
+            
+            // 模板管理元素
+            const templatesList = document.getElementById('templates-list');
+            const saveTemplateBtn = document.getElementById('save-template-btn');
+            const templateModal = document.getElementById('template-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const templateNameInput = document.getElementById('template-name');
+            const saveModalBtn = document.getElementById('save-modal');
+            const cancelModalBtn = document.getElementById('cancel-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            
+            // 示例模板数据
+            const exampleTemplates = [
+                {
+                    id: 't1',
+                    name: '上班车费',
+                    currency: '港币',
+                    amount: 5.00,
+                    category: '交通出行',
+                    categoryId: '3',
+                    subcategory: 'MTR',
+                    brand: '',
+                    description: '每日上班通勤费用'
+                },
+                {
+                    id: 't2',
+                    name: '午餐',
+                    currency: '港币',
+                    amount: 40.00,
+                    category: '饮食消费',
+                    categoryId: '9',
+                    subcategory: '餐厅',
+                    brand: '元气寿司',
+                    description: '工作日午餐'
+                },
+                {
+                    id: 't3',
+                    name: 'Netflix订阅',
+                    currency: '港币',
+                    amount: 78.00,
+                    category: '会员订阅',
+                    categoryId: '1',
+                    subcategory: '订阅服务',
+                    brand: 'Netflix',
+                    description: '月度订阅费用'
+                },
+                {
+                    id: 't4',
+                    name: '游戏氪金',
+                    currency: '人民币',
+                    amount: 30.00,
+                    category: '动漫娱乐',
+                    categoryId: '2',
+                    subcategory: '氪金',
+                    brand: '腾讯',
+                    description: '游戏充值'
+                }
+            ];
+            
+            // 如果localStorage中没有模板，则添加示例模板
+            if (templates.length === 0) {
+                templates = [...exampleTemplates];
+                localStorage.setItem('templates', JSON.stringify(templates));
+            }
+            
+            // 渲染模板列表
+            function renderTemplates() {
+                templatesList.innerHTML = '';
+                
+                if (templates.length === 0) {
+                    templatesList.innerHTML = `
+                        <div class="no-templates">
+                            <i class="fas fa-clone"></i>
+                            <p>暂无模板，保存常用记录作为模板</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                templates.forEach((template) => {
+                    const templateCard = document.createElement('div');
+                    templateCard.className = 'template-card';
+                    templateCard.innerHTML = `
+                        <div class="template-name">
+                            <i class="fas fa-file-invoice"></i>
+                            ${template.name}
+                        </div>
+                        <div class="template-details">
+                            <div class="template-detail">
+                                <div class="template-label">分类</div>
+                                <div class="template-value">${template.category}</div>
+                            </div>
+                            <div class="template-detail">
+                                <div class="template-label">金额</div>
+                                <div class="template-value">${template.currency}${template.amount}</div>
+                            </div>
+                            <div class="template-detail">
+                                <div class="template-label">子分类</div>
+                                <div class="template-value">${template.subcategory || '-'}</div>
+                            </div>
+                            <div class="template-detail">
+                                <div class="template-label">品牌</div>
+                                <div class="template-value">${template.brand || '-'}</div>
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-action-btn use-template-btn" data-id="${template.id}">
+                                <i class="fas fa-play-circle"></i> 使用
+                            </button>
+                            <button class="template-action-btn edit-template-btn" data-id="${template.id}">
+                                <i class="fas fa-edit"></i> 更新
+                            </button>
+                            <button class="template-action-btn delete-template-btn" data-id="${template.id}">
+                                <i class="fas fa-trash-alt"></i> 删除
+                            </button>
+                        </div>
+                    `;
+                    templatesList.appendChild(templateCard);
+                });
+                
+                // 添加模板操作事件监听
+                document.querySelectorAll('.use-template-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        useTemplate(id);
+                    });
+                });
+                
+                document.querySelectorAll('.edit-template-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        openEditTemplateModal(id);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-template-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deleteTemplate(id);
+                    });
+                });
+            }
+            
+            // 使用模板
+            function useTemplate(id) {
+                const template = templates.find(t => t.id === id);
+                if (!template) return;
+                
+                // 设置日期为今天
+                document.getElementById('date').value = `${year}-${month}-${day}`;
+                
+                // 设置货币
+                currencyBtns.forEach(btn => {
+                    btn.classList.remove('selected');
+                    if (btn.getAttribute('data-currency') === template.currency) {
+                        btn.classList.add('selected');
+                    }
+                });
+                
+                // 设置金额
+                document.getElementById('amount').value = template.amount;
+                
+                // 设置分类
+                categoryBtns.forEach(btn => {
+                    btn.classList.remove('selected');
+                    if (btn.getAttribute('data-category') === template.category) {
+                        btn.classList.add('selected');
+                        // 显示子分类和品牌部分
+                        document.getElementById('subcategory-section').classList.add('visible');
+                        document.getElementById('brand-section').classList.add('visible');
+                    }
+                });
+                
+                // 设置子分类
+                if (template.subcategory) {
+                    let found = false;
+                    subcategoryBtns.forEach(btn => {
+                        btn.classList.remove('selected');
+                        if (btn.getAttribute('data-subcategory') === template.subcategory) {
+                            btn.classList.add('selected');
+                            found = true;
+                        }
+                    });
+                    
+                    if (!found) {
+                        newSubcategoryInput.value = template.subcategory;
+                        newSubcategoryInput.classList.add('input-selected');
+                    } else {
+                        newSubcategoryInput.value = '';
+                        newSubcategoryInput.classList.remove('input-selected');
+                    }
+                } else {
+                    subcategoryBtns.forEach(btn => btn.classList.remove('selected'));
+                    newSubcategoryInput.value = '';
+                    newSubcategoryInput.classList.remove('input-selected');
+                }
+                
+                // 设置品牌
+                if (template.brand) {
+                    let found = false;
+                    brandBtns.forEach(btn => {
+                        btn.classList.remove('selected');
+                        if (btn.getAttribute('data-brand') === template.brand) {
+                            btn.classList.add('selected');
+                            found = true;
+                        }
+                    });
+                    
+                    if (!found) {
+                        newBrandInput.value = template.brand;
+                        newBrandInput.classList.add('input-selected');
+                    } else {
+                        newBrandInput.value = '';
+                        newBrandInput.classList.remove('input-selected');
+                    }
+                } else {
+                    brandBtns.forEach(btn => btn.classList.remove('selected'));
+                    newBrandInput.value = '';
+                    newBrandInput.classList.remove('input-selected');
+                }
+                
+                // 设置描述
+                document.getElementById('description').value = template.description || '';
+                
+                // 滚动到表单顶部
+                document.getElementById('add-section').scrollIntoView({ behavior: 'smooth' });
+                
+                // 显示成功消息
+                showToast(`模板 "${template.name}" 已加载`);
+            }
+            
+            // 打开保存模板模态框
+            saveTemplateBtn.addEventListener('click', function() {
+                editingTemplateId = null;
+                modalTitle.textContent = '保存新模板';
+                templateNameInput.value = '';
+                templateNameInput.placeholder = '输入模板名称...';
+                templateModal.classList.add('visible');
+            });
+            
+            // 打开编辑模板模态框
+            function openEditTemplateModal(id) {
+                const template = templates.find(t => t.id === id);
+                if (!template) return;
+                
+                editingTemplateId = id;
+                modalTitle.textContent = '编辑模板';
+                templateNameInput.value = template.name;
+                templateNameInput.placeholder = '输入模板名称...';
+                templateModal.classList.add('visible');
+            }
+            
+            // 保存模板（新增或编辑）
+            saveModalBtn.addEventListener('click', function() {
+                const name = templateNameInput.value.trim();
+                if (!name) {
+                    alert('请输入模板名称');
+                    return;
+                }
+                
+                // 获取当前表单数据（不包括日期）
+                const currency = document.querySelector('.currency-btn.selected')?.getAttribute('data-currency') || '港币';
+                const amount = parseFloat(document.getElementById('amount').value) || 0;
+                const category = document.querySelector('.category-btn.selected')?.getAttribute('data-category') || '';
+                const categoryId = document.querySelector('.category-btn.selected')?.getAttribute('data-id') || '';
+                
+                // 获取子分类
+                let subcategory = '';
+                if (newSubcategoryInput.classList.contains('input-selected') && newSubcategoryInput.value.trim()) {
+                    subcategory = newSubcategoryInput.value.trim();
+                } else {
+                    subcategory = document.querySelector('.subcategory-btn.selected')?.getAttribute('data-subcategory') || '';
+                }
+                
+                // 获取品牌
+                let brand = '';
+                if (newBrandInput.classList.contains('input-selected') && newBrandInput.value.trim()) {
+                    brand = newBrandInput.value.trim();
+                } else {
+                    brand = document.querySelector('.brand-btn.selected')?.getAttribute('data-brand') || '';
+                }
+                
+                const description = document.getElementById('description').value || '';
+                
+                if (!category) {
+                    alert('请先选择一个分类');
+                    return;
+                }
+                
+                if (editingTemplateId) {
+                    // 编辑现有模板
+                    const index = templates.findIndex(t => t.id === editingTemplateId);
+                    if (index !== -1) {
+                        templates[index] = {
+                            ...templates[index],
+                            name,
+                            currency,
+                            amount,
+                            category,
+                            categoryId,
+                            subcategory,
+                            brand,
+                            description
+                        };
+                    }
+                } else {
+                    // 创建新模板
+                    const newTemplate = {
+                        id: Date.now().toString(),
+                        name,
+                        currency,
+                        amount,
+                        category,
+                        categoryId,
+                        subcategory,
+                        brand,
+                        description
+                    };
+                    templates.push(newTemplate);
+                }
+                
+                // 保存到localStorage
+                localStorage.setItem('templates', JSON.stringify(templates));
+                
+                // 重新渲染模板列表
+                renderTemplates();
+                
+                // 关闭模态框
+                templateModal.classList.remove('visible');
+                
+                // 显示成功消息
+                showToast(`模板 "${name}" 已保存`);
+            });
+            
+            // 删除模板
+            function deleteTemplate(id) {
+                if (!confirm('确定要删除这个模板吗？')) return;
+                
+                templates = templates.filter(t => t.id !== id);
+                localStorage.setItem('templates', JSON.stringify(templates));
+                renderTemplates();
+                
+                // 显示成功消息
+                showToast('模板已删除');
+            }
+            
+            // 关闭模态框
+            function closeModal() {
+                templateModal.classList.remove('visible');
+                editingTemplateId = null;
+            }
+            
+            cancelModalBtn.addEventListener('click', closeModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // 点击模态框背景关闭
+            templateModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // 初始渲染模板列表
+            renderTemplates();
+
+            // 显示成功弹窗
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                
+                // 3秒后隐藏弹窗
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
